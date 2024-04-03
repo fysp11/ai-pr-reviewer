@@ -1,44 +1,35 @@
-import {
-  getBooleanInput,
-  getInput,
-  getMultilineInput,
-  setFailed,
-  warning
-} from '@actions/core'
-import {Bot} from './bot'
-import {OpenAIOptions, Options} from './options'
-import {Prompts} from './prompts'
-import {codeReview} from './review'
-import {handleReviewComment} from './review-comment'
+import {getBooleanInput, getInput, getMultilineInput, setFailed, warning} from "@actions/core"
+import {Bot} from "./bot"
+import {OpenAIOptions, Options} from "./options"
+import {Prompts} from "./prompts"
+import {codeReview} from "./review"
+import {handleReviewComment} from "./review-comment"
 
 async function run(): Promise<void> {
   const options: Options = new Options(
-    getBooleanInput('debug'),
-    getBooleanInput('disable_review'),
-    getBooleanInput('disable_release_notes'),
-    getInput('max_files'),
-    getBooleanInput('review_simple_changes'),
-    getBooleanInput('review_comment_lgtm'),
-    getMultilineInput('path_filters'),
-    getInput('system_message'),
-    getInput('openai_light_model'),
-    getInput('openai_heavy_model'),
-    getInput('openai_model_temperature'),
-    getInput('openai_retries'),
-    getInput('openai_timeout_ms'),
-    getInput('openai_concurrency_limit'),
-    getInput('github_concurrency_limit'),
-    getInput('openai_base_url'),
-    getInput('language')
+    getBooleanInput("debug"),
+    getBooleanInput("disable_review"),
+    getBooleanInput("disable_release_notes"),
+    getInput("max_files"),
+    getBooleanInput("review_simple_changes"),
+    getBooleanInput("review_comment_lgtm"),
+    getMultilineInput("path_filters"),
+    getInput("system_message"),
+    getInput("openai_light_model"),
+    getInput("openai_heavy_model"),
+    getInput("openai_model_temperature"),
+    getInput("openai_retries"),
+    getInput("openai_timeout_ms"),
+    getInput("openai_concurrency_limit"),
+    getInput("github_concurrency_limit"),
+    getInput("openai_base_url"),
+    getInput("language")
   )
 
   // print options
   options.print()
 
-  const prompts: Prompts = new Prompts(
-    getInput('summarize'),
-    getInput('summarize_release_notes')
-  )
+  const prompts: Prompts = new Prompts(getInput("summarize"), getInput("summarize_release_notes"))
 
   // Create two bots, one for summary and one for review
 
@@ -71,16 +62,15 @@ async function run(): Promise<void> {
   try {
     // check if the event is pull_request
     if (
-      process.env.GITHUB_EVENT_NAME === 'pull_request' ||
-      process.env.GITHUB_EVENT_NAME === 'pull_request_target'
+      process.env.GITHUB_EVENT_NAME === "pull_request" ||
+      process.env.GITHUB_EVENT_NAME === "pull_request_target"
     ) {
+      // console.log("Running code review")
       await codeReview(lightBot, heavyBot, options, prompts)
-    } else if (
-      process.env.GITHUB_EVENT_NAME === 'pull_request_review_comment'
-    ) {
+    } else if (process.env.GITHUB_EVENT_NAME === "pull_request_review_comment") {
       await handleReviewComment(heavyBot, options, prompts)
     } else {
-      warning('Skipped: this action only works on push events or pull_request')
+      warning("Skipped: this action only works on push events or pull_request")
     }
   } catch (e: any) {
     if (e instanceof Error) {
@@ -92,10 +82,10 @@ async function run(): Promise<void> {
 }
 
 process
-  .on('unhandledRejection', (reason, p) => {
+  .on("unhandledRejection", (reason, p) => {
     warning(`Unhandled Rejection at Promise: ${reason}, promise is ${p}`)
   })
-  .on('uncaughtException', (e: any) => {
+  .on("uncaughtException", (e: any) => {
     warning(`Uncaught Exception thrown: ${e}, backtrace: ${e.stack}`)
   })
 

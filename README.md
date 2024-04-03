@@ -1,23 +1,13 @@
-# CodeRabbit Pro
-
-This is an old version of [CodeRabbit](http://coderabbit.ai) and is now in the maintenance mode.
-We recommend installing the Pro version from [CodeRabbit](http://coderabbit.ai). The Pro version is a total redesign and offers significantly better reviews that learn from your usage and improve over time. CodeRabbit Pro is free for open source projects. 
-
-[![Discord](https://img.shields.io/badge/Join%20us%20on-Discord-blue?logo=discord&style=flat-square)](https://discord.gg/GsXnASn26c)
-
-# AI-based PR reviewer and summarizer
+# AI PR Reviewer
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub](https://img.shields.io/github/last-commit/coderabbitai/ai-pr-reviewer/main?style=flat-square)](https://github.com/coderabbitai/ai-pr-reviewer/commits/main)
+[![GitHub](https://img.shields.io/github/last-commit/fysp11/ai-pr-reviewer/main?style=flat-square)](https://github.com/fysp11/ai-pr-reviewer/commits/main)
 
 ## Overview
 
-CodeRabbit `ai-pr-reviewer` is an AI-based code reviewer and summarizer for
-GitHub pull requests using OpenAI's `gpt-3.5-turbo` and `gpt-4` models. It is
-designed to be used as a GitHub Action and can be configured to run on every
-pull request and review comments
+`ai-pr-reviewer` is an AI-based code reviewer and summarizer for GitHub pull requests using OpenAI's models. It is designed to be used as a GitHub Action and can be configured to run on every pull request and review comments
 
-## Reviewer Features:
+## Reviewer Features
 
 - **PR Summarization**: It generates a summary and release notes of the changes
   in the pull request.
@@ -30,9 +20,7 @@ pull request and review comments
   and reduce noise by tracking changed files between commits and the base of the
   pull request.
 - **"Light" model for summary**: Designed to be used with a "light"
-  summarization model (e.g. `gpt-3.5-turbo`) and a "heavy" review model (e.g.
-  `gpt-4`). _For best results, use `gpt-4` as the "heavy" model, as thorough
-  code review needs strong reasoning abilities._
+  summarization model and a "heavy" review model.
 - **Chat with bot**: Supports conversation with the bot in the context of lines
   of code or entire files, useful for providing context, generating test cases,
   and reducing code complexity.
@@ -49,15 +37,22 @@ configure the required environment variables, such as `GITHUB_TOKEN` and
 `OPENAI_API_KEY`. For more information on usage, examples, contributing, and
 FAQs, you can refer to the sections below.
 
-- [Overview](#overview)
-- [Professional Version of CodeRabbit](#professional-version-of-coderabbit)
-- [Reviewer Features](#reviewer-features)
-- [Install instructions](#install-instructions)
-- [Conversation with CodeRabbit](#conversation-with-coderabbit)
-- [Examples](#examples)
-- [Contribute](#contribute)
-- [FAQs](#faqs)
-
+- [AI PR Reviewer](#ai-pr-reviewer)
+  - [Overview](#overview)
+  - [Reviewer Features](#reviewer-features)
+  - [Install instructions](#install-instructions)
+    - [Environment variables](#environment-variables)
+    - [Models: `gpt-4` and `gpt-3.5-turbo`](#models-gpt-4-and-gpt-35-turbo)
+    - [Prompts \& Configuration](#prompts--configuration)
+  - [Conversation with AI Reviewer](#conversation-with-ai-reviewer)
+    - [Ignoring PRs](#ignoring-prs)
+  - [Examples](#examples)
+  - [Contribute](#contribute)
+    - [Developing](#developing)
+  - [FAQs](#faqs)
+    - [Review pull requests from forks](#review-pull-requests-from-forks)
+    - [Inspect the messages between OpenAI server](#inspect-the-messages-between-openai-server)
+    - [Disclaimer](#disclaimer)
 
 ## Install instructions
 
@@ -87,7 +82,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: coderabbitai/ai-pr-reviewer@latest
+      - uses: fysp11/ai-pr-reviewer@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -97,7 +92,7 @@ jobs:
           review_comment_lgtm: false
 ```
 
-#### Environment variables
+### Environment variables
 
 - `GITHUB_TOKEN`: This should already be available to the GitHub Action
   environment. This is used to add comments to the pull request.
@@ -130,14 +125,10 @@ value. For example, to review docs/blog posts, you can use the following prompt:
 
 ```yaml
 system_message: |
-  You are `@coderabbitai` (aka `github-actions[bot]`), a language model
+  You are `@ai` (aka `github-actions[bot]`), a language model
   trained by OpenAI. Your purpose is to act as a highly experienced
   DevRel (developer relations) professional with focus on cloud-native
   infrastructure.
-
-  Company context -
-  CodeRabbit is an AI-powered Code reviewer.It boosts code quality and cuts manual effort. Offers context-aware, line-by-line feedback, highlights critical changes,
-  enables bot interaction, and lets you commit suggestions directly from GitHub.
 
   When reviewing or generating content focus on key areas such as -
   - Accuracy
@@ -157,15 +148,15 @@ system_message: |
 
 </details>
 
-## Conversation with CodeRabbit
+## Conversation with AI Reviewer
 
 You can reply to a review comment made by this action and get a response based
 on the diff context. Additionally, you can invite the bot to a conversation by
-tagging it in the comment (`@coderabbitai`).
+tagging it in the comment (`@ai`).
 
 Example:
 
-> @coderabbitai Please generate a test plan for this file.
+> @ai Please generate a test plan for this file.
 
 Note: A review comment is a comment made on a diff or a file in the pull
 request.
@@ -177,7 +168,7 @@ to review documentation, you can ignore PRs that only change the documentation.
 To ignore a PR, add the following keyword in the PR description:
 
 ```text
-@coderabbitai: ignore
+@ai: ignore
 ```
 
 ## Examples
@@ -205,13 +196,13 @@ appreciated.
 Install the dependencies
 
 ```bash
-$ npm install
+npm install
 ```
 
 Build the typescript and package it for distribution
 
 ```bash
-$ npm run build && npm run package
+npm run build && npm run package
 ```
 
 ## FAQs
@@ -247,7 +238,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: coderabbitai/ai-pr-reviewer@latest
+      - uses: fysp11/ai-pr-reviewer@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -258,7 +249,7 @@ jobs:
 ```
 
 See also:
-https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
+<https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target>
 
 ### Inspect the messages between OpenAI server
 
