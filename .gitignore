@@ -123,4 +123,3 @@ tags.lock
 .env
 .secrets
 bin/act
-dist/
