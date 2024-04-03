@@ -1,6 +1,6 @@
-import {info} from '@actions/core'
-import {minimatch} from 'minimatch'
-import {TokenLimits} from './limits'
+import {info} from "@actions/core"
+import {minimatch} from "minimatch"
+import {TokenLimits} from "./limits"
 
 export class Options {
   debug: boolean
@@ -27,20 +27,20 @@ export class Options {
     debug: boolean,
     disableReview: boolean,
     disableReleaseNotes: boolean,
-    maxFiles = '0',
+    maxFiles = "0",
     reviewSimpleChanges = false,
     reviewCommentLGTM = false,
     pathFilters: string[] | null = null,
-    systemMessage = '',
-    openaiLightModel = 'gpt-3.5-turbo',
-    openaiHeavyModel = 'gpt-3.5-turbo',
-    openaiModelTemperature = '0.0',
-    openaiRetries = '3',
-    openaiTimeoutMS = '120000',
-    openaiConcurrencyLimit = '6',
-    githubConcurrencyLimit = '6',
-    apiBaseUrl = 'https://api.openai.com/v1',
-    language = 'en-US'
+    systemMessage = "",
+    openaiLightModel = "gpt-3.5-turbo",
+    openaiHeavyModel = "gpt-3.5-turbo",
+    openaiModelTemperature = "0.0",
+    openaiRetries = "3",
+    openaiTimeoutMS = "120000",
+    openaiConcurrencyLimit = "6",
+    githubConcurrencyLimit = "6",
+    apiBaseUrl = "https://api.openai.com/v1",
+    language = "en-US"
   ) {
     this.debug = debug
     this.disableReview = disableReview
@@ -102,7 +102,7 @@ export class PathFilter {
       for (const rule of rules) {
         const trimmed = rule?.trim()
         if (trimmed) {
-          if (trimmed.startsWith('!')) {
+          if (trimmed.startsWith("!")) {
             this.rules.push([trimmed.substring(1).trim(), true])
           } else {
             this.rules.push([trimmed, false])
@@ -142,7 +142,7 @@ export class OpenAIOptions {
   model: string
   tokenLimits: TokenLimits
 
-  constructor(model = 'gpt-3.5-turbo', tokenLimits: TokenLimits | null = null) {
+  constructor(model = "gpt-3.5-turbo", tokenLimits: TokenLimits | null = null) {
     this.model = model
     if (tokenLimits != null) {
       this.tokenLimits = tokenLimits

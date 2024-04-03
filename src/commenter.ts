@@ -1,49 +1,47 @@
-import {getInput, info, warning} from '@actions/core'
+import {getInput, info, warning} from "@actions/core"
 // eslint-disable-next-line camelcase
-import {context as github_context} from '@actions/github'
-import {octokit} from './octokit'
+import {context as github_context} from "@actions/github"
+import {octokit} from "./octokit"
 
 // eslint-disable-next-line camelcase
 const context = github_context
 const repo = context.repo
 
-export const COMMENT_GREETING = `${getInput('bot_icon')}   CodeRabbit`
+export const COMMENT_GREETING = `${getInput("bot_icon")}   Fysp Tech`
 
-export const COMMENT_TAG =
-  '<!-- This is an auto-generated comment by OSS CodeRabbit -->'
+export const COMMENT_TAG = "<!-- This is an auto-generated comment by OSS Fysp Tech -->"
 
-export const COMMENT_REPLY_TAG =
-  '<!-- This is an auto-generated reply by OSS CodeRabbit -->'
+export const COMMENT_REPLY_TAG = "<!-- This is an auto-generated reply by OSS Fysp Tech -->"
 
 export const SUMMARIZE_TAG =
-  '<!-- This is an auto-generated comment: summarize by OSS CodeRabbit -->'
+  "<!-- This is an auto-generated comment: summarize by OSS Fysp Tech -->"
 
 export const IN_PROGRESS_START_TAG =
-  '<!-- This is an auto-generated comment: summarize review in progress by OSS CodeRabbit -->'
+  "<!-- This is an auto-generated comment: summarize review in progress by OSS Fysp Tech -->"
 
 export const IN_PROGRESS_END_TAG =
-  '<!-- end of auto-generated comment: summarize review in progress by OSS CodeRabbit -->'
+  "<!-- end of auto-generated comment: summarize review in progress by OSS Fysp Tech -->"
 
 export const DESCRIPTION_START_TAG =
-  '<!-- This is an auto-generated comment: release notes by OSS CodeRabbit -->'
+  "<!-- This is an auto-generated comment: release notes by OSS Fysp Tech -->"
 export const DESCRIPTION_END_TAG =
-  '<!-- end of auto-generated comment: release notes by OSS CodeRabbit -->'
+  "<!-- end of auto-generated comment: release notes by OSS Fysp Tech -->"
 
-export const RAW_SUMMARY_START_TAG = `<!-- This is an auto-generated comment: raw summary by OSS CodeRabbit -->
+export const RAW_SUMMARY_START_TAG = `<!-- This is an auto-generated comment: raw summary by OSS Fysp Tech -->
 <!--
 `
 export const RAW_SUMMARY_END_TAG = `-->
-<!-- end of auto-generated comment: raw summary by OSS CodeRabbit -->`
+<!-- end of auto-generated comment: raw summary by OSS Fysp Tech -->`
 
-export const SHORT_SUMMARY_START_TAG = `<!-- This is an auto-generated comment: short summary by OSS CodeRabbit -->
+export const SHORT_SUMMARY_START_TAG = `<!-- This is an auto-generated comment: short summary by OSS Fysp Tech -->
 <!--
 `
 
 export const SHORT_SUMMARY_END_TAG = `-->
-<!-- end of auto-generated comment: short summary by OSS CodeRabbit -->`
+<!-- end of auto-generated comment: short summary by OSS Fysp Tech -->`
 
-export const COMMIT_ID_START_TAG = '<!-- commit_ids_reviewed_start -->'
-export const COMMIT_ID_END_TAG = '<!-- commit_ids_reviewed_end -->'
+export const COMMIT_ID_START_TAG = "<!-- commit_ids_reviewed_start -->"
+export const COMMIT_ID_END_TAG = "<!-- commit_ids_reviewed_end -->"
 
 export class Commenter {
   /**
@@ -56,9 +54,7 @@ export class Commenter {
     } else if (context.payload.issue != null) {
       target = context.payload.issue.number
     } else {
-      warning(
-        'Skipped: context.payload.pull_request and context.payload.issue are both null'
-      )
+      warning("Skipped: context.payload.pull_request and context.payload.issue are both null")
       return
     }
 
@@ -72,9 +68,9 @@ ${message}
 
 ${tag}`
 
-    if (mode === 'create') {
+    if (mode === "create") {
       await this.create(body, target)
-    } else if (mode === 'replace') {
+    } else if (mode === "replace") {
       await this.replace(body, tag, target)
     } else {
       warning(`Unknown mode: ${mode}, use "replace" instead`)
@@ -88,7 +84,7 @@ ${tag}`
     if (start >= 0 && end >= 0) {
       return content.slice(start + startTag.length, end)
     }
-    return ''
+    return ""
   }
 
   removeContentWithinTags(content: string, startTag: string, endTag: string) {
@@ -101,27 +97,15 @@ ${tag}`
   }
 
   getRawSummary(summary: string) {
-    return this.getContentWithinTags(
-      summary,
-      RAW_SUMMARY_START_TAG,
-      RAW_SUMMARY_END_TAG
-    )
+    return this.getContentWithinTags(summary, RAW_SUMMARY_START_TAG, RAW_SUMMARY_END_TAG)
   }
 
   getShortSummary(summary: string) {
-    return this.getContentWithinTags(
-      summary,
-      SHORT_SUMMARY_START_TAG,
-      SHORT_SUMMARY_END_TAG
-    )
+    return this.getContentWithinTags(summary, SHORT_SUMMARY_START_TAG, SHORT_SUMMARY_END_TAG)
   }
 
   getDescription(description: string) {
-    return this.removeContentWithinTags(
-      description,
-      DESCRIPTION_START_TAG,
-      DESCRIPTION_END_TAG
-    )
+    return this.removeContentWithinTags(description, DESCRIPTION_START_TAG, DESCRIPTION_END_TAG)
   }
 
   getReleaseNotes(description: string) {
@@ -130,7 +114,7 @@ ${tag}`
       DESCRIPTION_START_TAG,
       DESCRIPTION_END_TAG
     )
-    return releaseNotes.replace(/(^|\n)> .*/g, '')
+    return releaseNotes.replace(/(^|\n)> .*/g, "")
   }
 
   async updateDescription(pullNumber: number, message: string) {
@@ -144,7 +128,7 @@ ${tag}`
         // eslint-disable-next-line camelcase
         pull_number: pullNumber
       })
-      let body = ''
+      let body = ""
       if (pr.data.body) {
         body = pr.data.body
       }
@@ -164,9 +148,7 @@ ${tag}`
         body: newDescription
       })
     } catch (e) {
-      warning(
-        `Failed to get PR: ${e}, skipping adding release notes to description.`
-      )
+      warning(`Failed to get PR: ${e}, skipping adding release notes to description.`)
     }
   }
 
@@ -177,12 +159,7 @@ ${tag}`
     message: string
   }> = []
 
-  async bufferReviewComment(
-    path: string,
-    startLine: number,
-    endLine: number,
-    message: string
-  ) {
+  async bufferReviewComment(path: string, startLine: number, endLine: number, message: string) {
     message = `${COMMENT_GREETING}
 
 ${message}
@@ -205,14 +182,10 @@ ${COMMENT_TAG}`
         pull_number: pullNumber
       })
 
-      const pendingReview = reviews.data.find(
-        review => review.state === 'PENDING'
-      )
+      const pendingReview = reviews.data.find((review: any) => review.state === "PENDING")
 
       if (pendingReview) {
-        info(
-          `Deleting pending review for PR #${pullNumber} id: ${pendingReview.id}`
-        )
+        info(`Deleting pending review for PR #${pullNumber} id: ${pendingReview.id}`)
         try {
           await octokit.pulls.deletePendingReview({
             owner: repo.owner,
@@ -248,7 +221,7 @@ ${statusMsg}
           pull_number: pullNumber,
           // eslint-disable-next-line camelcase
           commit_id: commitId,
-          event: 'COMMENT',
+          event: "COMMENT",
           body
         })
       } catch (e) {
@@ -295,7 +268,7 @@ ${statusMsg}
         // eslint-disable-next-line camelcase
         commentData.start_line = comment.startLine
         // eslint-disable-next-line camelcase
-        commentData.start_side = 'RIGHT'
+        commentData.start_side = "RIGHT"
       }
 
       return commentData
@@ -309,9 +282,7 @@ ${statusMsg}
         pull_number: pullNumber,
         // eslint-disable-next-line camelcase
         commit_id: commitId,
-        comments: this.reviewCommentsBuffer.map(comment =>
-          generateCommentData(comment)
-        )
+        comments: this.reviewCommentsBuffer.map(comment => generateCommentData(comment))
       })
 
       info(
@@ -325,13 +296,11 @@ ${statusMsg}
         pull_number: pullNumber,
         // eslint-disable-next-line camelcase
         review_id: review.data.id,
-        event: 'COMMENT',
+        event: "COMMENT",
         body
       })
     } catch (e) {
-      warning(
-        `Failed to create review: ${e}. Falling back to individual comments.`
-      )
+      warning(`Failed to create review: ${e}. Falling back to individual comments.`)
       await this.deletePendingReview(pullNumber)
       let commentCounter = 0
       for (const comment of this.reviewCommentsBuffer) {
@@ -355,18 +324,12 @@ ${statusMsg}
         }
 
         commentCounter++
-        info(
-          `Comment ${commentCounter}/${this.reviewCommentsBuffer.length} posted`
-        )
+        info(`Comment ${commentCounter}/${this.reviewCommentsBuffer.length} posted`)
       }
     }
   }
 
-  async reviewCommentReply(
-    pullNumber: number,
-    topLevelComment: any,
-    message: string
-  ) {
+  async reviewCommentReply(pullNumber: number, topLevelComment: any, message: string) {
     const reply = `${COMMENT_GREETING}
 
 ${message}
@@ -403,10 +366,7 @@ ${COMMENT_REPLY_TAG}
     try {
       if (topLevelComment.body.includes(COMMENT_TAG)) {
         // replace COMMENT_TAG with COMMENT_REPLY_TAG in topLevelComment
-        const newBody = topLevelComment.body.replace(
-          COMMENT_TAG,
-          COMMENT_REPLY_TAG
-        )
+        const newBody = topLevelComment.body.replace(COMMENT_TAG, COMMENT_REPLY_TAG)
         await octokit.pulls.updateReviewComment({
           owner: repo.owner,
           repo: repo.repo,
@@ -430,7 +390,7 @@ ${COMMENT_REPLY_TAG}
     return comments.filter(
       (comment: any) =>
         comment.path === path &&
-        comment.body !== '' &&
+        comment.body !== "" &&
         ((comment.start_line !== undefined &&
           comment.start_line >= startLine &&
           comment.line <= endLine) ||
@@ -438,17 +398,12 @@ ${COMMENT_REPLY_TAG}
     )
   }
 
-  async getCommentsAtRange(
-    pullNumber: number,
-    path: string,
-    startLine: number,
-    endLine: number
-  ) {
+  async getCommentsAtRange(pullNumber: number, path: string, startLine: number, endLine: number) {
     const comments = await this.listReviewComments(pullNumber)
     return comments.filter(
       (comment: any) =>
         comment.path === path &&
-        comment.body !== '' &&
+        comment.body !== "" &&
         ((comment.start_line !== undefined &&
           comment.start_line === startLine &&
           comment.line === endLine) ||
@@ -461,14 +416,9 @@ ${COMMENT_REPLY_TAG}
     path: string,
     startLine: number,
     endLine: number,
-    tag = ''
+    tag = ""
   ) {
-    const existingComments = await this.getCommentsWithinRange(
-      pullNumber,
-      path,
-      startLine,
-      endLine
-    )
+    const existingComments = await this.getCommentsWithinRange(pullNumber, path, startLine, endLine)
     // find all top most comments
     const topLevelComments = []
     for (const comment of existingComments) {
@@ -477,14 +427,11 @@ ${COMMENT_REPLY_TAG}
       }
     }
 
-    let allChains = ''
+    let allChains = ""
     let chainNum = 0
     for (const topLevelComment of topLevelComments) {
       // get conversation chain
-      const chain = await this.composeCommentChain(
-        existingComments,
-        topLevelComment
-      )
+      const chain = await this.composeCommentChain(existingComments, topLevelComment)
       if (chain && chain.includes(tag)) {
         chainNum += 1
         allChains += `Conversation Chain ${chainNum}:
@@ -501,29 +448,21 @@ ${chain}
       .filter((cmt: any) => cmt.in_reply_to_id === topLevelComment.id)
       .map((cmt: any) => `${cmt.user.login}: ${cmt.body}`)
 
-    conversationChain.unshift(
-      `${topLevelComment.user.login}: ${topLevelComment.body}`
-    )
+    conversationChain.unshift(`${topLevelComment.user.login}: ${topLevelComment.body}`)
 
-    return conversationChain.join('\n---\n')
+    return conversationChain.join("\n---\n")
   }
 
   async getCommentChain(pullNumber: number, comment: any) {
     try {
       const reviewComments = await this.listReviewComments(pullNumber)
-      const topLevelComment = await this.getTopLevelComment(
-        reviewComments,
-        comment
-      )
-      const chain = await this.composeCommentChain(
-        reviewComments,
-        topLevelComment
-      )
+      const topLevelComment = await this.getTopLevelComment(reviewComments, comment)
+      const chain = await this.composeCommentChain(reviewComments, topLevelComment)
       return {chain, topLevelComment}
     } catch (e) {
       warning(`Failed to get conversation chain: ${e}`)
       return {
-        chain: '',
+        chain: "",
         topLevelComment: null
       }
     }
@@ -685,9 +624,9 @@ ${chain}
     const ids = commentBody.substring(start + COMMIT_ID_START_TAG.length, end)
     // remove the <!-- and --> markers from each id and extract the id and remove empty strings
     return ids
-      .split('<!--')
-      .map(id => id.replace('-->', '').trim())
-      .filter(id => id !== '')
+      .split("<!--")
+      .map(id => id.replace("-->", "").trim())
+      .filter(id => id !== "")
   }
 
   // get review commit ids comment block from the body as a string
@@ -696,7 +635,7 @@ ${chain}
     const start = commentBody.indexOf(COMMIT_ID_START_TAG)
     const end = commentBody.indexOf(COMMIT_ID_END_TAG)
     if (start === -1 || end === -1) {
-      return ''
+      return ""
     }
     return commentBody.substring(start, end + COMMIT_ID_END_TAG.length)
   }
@@ -717,16 +656,13 @@ ${chain}
   }
 
   // given a list of commit ids provide the highest commit id that has been reviewed
-  getHighestReviewedCommitId(
-    commitIds: string[],
-    reviewedCommitIds: string[]
-  ): string {
+  getHighestReviewedCommitId(commitIds: string[], reviewedCommitIds: string[]): string {
     for (let i = commitIds.length - 1; i >= 0; i--) {
       if (reviewedCommitIds.includes(commitIds[i])) {
         return commitIds[i]
       }
     }
-    return ''
+    return ""
   }
 
   async getAllCommitIds(): Promise<string[]> {
@@ -745,7 +681,7 @@ ${chain}
           page
         })
 
-        allCommits.push(...commits.data.map(commit => commit.sha))
+        allCommits.push(...commits.data.map((commit: any) => commit.sha))
         page++
       } while (commits.data.length > 0)
     }
@@ -783,8 +719,7 @@ ${commentBody}`
     // otherwise do nothing
     if (start !== -1 && end !== -1) {
       return (
-        commentBody.substring(0, start) +
-        commentBody.substring(end + IN_PROGRESS_END_TAG.length)
+        commentBody.substring(0, start) + commentBody.substring(end + IN_PROGRESS_END_TAG.length)
       )
     }
     return commentBody
